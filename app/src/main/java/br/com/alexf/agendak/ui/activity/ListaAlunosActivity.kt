@@ -3,6 +3,7 @@ package br.com.alexf.agendak.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import br.com.alexf.agendak.R
@@ -68,8 +69,12 @@ class ListaAlunosActivity : AppCompatActivity() {
                         this@ListaAlunosActivity.startActivity(intent)
                     }
                 })
+        var layoutManager = LinearLayoutManager(this)
+        var decoration = DividerItemDecoration(lista_alunos.context,
+                layoutManager.orientation)
         lista_alunos.adapter = adapter
-        lista_alunos.layoutManager = LinearLayoutManager(this)
+        lista_alunos.layoutManager = layoutManager
+        lista_alunos.addItemDecoration(decoration)
     }
 
 
