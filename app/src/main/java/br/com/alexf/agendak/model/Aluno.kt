@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -17,6 +18,6 @@ data class Aluno(@PrimaryKey val id: String = UUID.randomUUID().toString(),
                  var site: String = "",
                  var nota: Double = 0.0,
                  @ColumnInfo(name = "caminho_foto")
-                 var caminhoFoto: String = "") {
+                 var caminhoFoto: String = "") : Serializable {
     @Ignore constructor() : this(id = UUID.randomUUID().toString())
 }

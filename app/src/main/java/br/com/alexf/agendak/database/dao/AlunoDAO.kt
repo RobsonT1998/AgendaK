@@ -1,9 +1,6 @@
 package br.com.alexf.agendak.database.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Delete
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import br.com.alexf.agendak.model.Aluno
 import io.reactivex.Flowable
 
@@ -20,4 +17,7 @@ interface AlunoDAO {
 
     @Delete
     fun remove(aluno: Aluno)
+
+    @Update
+    fun update(aluno: Aluno)
 }

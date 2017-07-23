@@ -1,4 +1,4 @@
-package br.com.alexf.agendak.ui.adapter
+package br.com.alexf.agendak.ui.recyclerview.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import br.com.alexf.agendak.R
 import br.com.alexf.agendak.model.Aluno
+import br.com.alexf.agendak.ui.recyclerview.listener.OnItemClickListener
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.list_item.*;
 
 /**
  * Created by alex on 21/07/17.
  */
-class AlunosAdapter(val context: Context, val alunos: List<Aluno>) : RecyclerView.Adapter<AlunosAdapter.ViewHolder>() {
+class AlunosAdapter(val context: Context, val alunos: List<Aluno>, val onItemClickListener: OnItemClickListener<Aluno>) : RecyclerView.Adapter<AlunosAdapter.ViewHolder>() {
 
     var alunoSelecionado: Aluno? = null
         private set
@@ -24,10 +24,8 @@ class AlunosAdapter(val context: Context, val alunos: List<Aluno>) : RecyclerVie
         val aluno = alunos.get(position)
         holder.nome.text = aluno.nome
         holder.telefone.text = aluno.telefone
-        holder.itemView.setOnLongClickListener {
-            alunoSelecionado = alunos.get(position)
-            false
-        }
+        holder.setOnLongClickListener(position)
+        holder.setItemClickListener(aluno, onItemClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -51,6 +49,17 @@ class AlunosAdapter(val context: Context, val alunos: List<Aluno>) : RecyclerVie
 
         override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
             menu.add(0, 1, 0, "Remove")
+        }
+
+        fun setItemClickListener(aluno: Aluno, onItemClickListener: OnItemClickListener<Aluno>) {
+            itemView.setOnClickListener { onItemClickListener.onItemClick(aluno) }
+        }
+
+        fun setOnLongClickListener(position: Int) {
+            itemView.setOnLongClickListener {
+                alunoSelecionado = alunos.get(position)
+                false
+            }
         }
 
     }

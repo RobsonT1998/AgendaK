@@ -13,22 +13,42 @@ import kotlinx.android.synthetic.main.activity_formulario.*
 
 class FormularioActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    lateinit var aluno: Aluno
+    var novoAluno: Boolean = true
+
+    override fun onCreate(bundle: Bundle?) {
+        super.onCreate(bundle)
         setContentView(R.layout.activity_formulario)
+
+        if (intent?.hasExtra("aluno") != null) {
+            aluno = intent.extras.getSerializable("aluno") as Aluno
+            novoAluno = false
+        } else {
+            aluno = Aluno()
+        }
+
+        preencheCampos()
     }
 
-    fun pegaAluno(): Aluno {
+    fun preencheAluno() {
         var nome = formulario_nome.text.toString()
         var endereco = formulario_endereco.text.toString()
         var nota = formulario_nota.rating.toDouble()
         var site = formulario_site.text.toString()
         var telefone = formulario_telefone.text.toString()
-        return Aluno(nome = nome,
-                endereco = endereco,
-                nota = nota,
-                site = site,
-                telefone = telefone)
+        aluno.nome = nome;
+        aluno.endereco = endereco
+        aluno.nota = nota
+        aluno.site = site
+        aluno.telefone = telefone
+    }
+
+    fun preencheCampos() {
+        formulario_nome.setText(aluno.nome)
+        formulario_endereco.setText(aluno.endereco)
+        formulario_site.setText(aluno.site)
+        formulario_telefone.setText(aluno.telefone)
+        formulario_nota.rating = aluno.nota.toFloat()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -41,16 +61,16 @@ class FormularioActivity : AppCompatActivity() {
         var id = item?.itemId
         when (id) {
             menu_formulario_ok -> {
-                var aluno = pegaAluno()
-//                Single.fromCallable {
-//                    var database = AgendaKApplication.database
-//                    database.alunoDAO().insert(aluno)
-//                }.subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe()
-                RxSchedulers().singleMainThread {
-                    var database = AgendaKApplication.database
-                    database.alunoDAO().insert(aluno)
+                preencheAluno()
+                var database = AgendaKApplication.database
+                if (novoAluno) {
+                    RxSchedulers().singleMainThread {
+                        database.alunoDAO().insert(aluno)
+                    }
+                } else {
+                    RxSchedulers().singleMainThread {
+                        database.alunoDAO().update(aluno)
+                    }
                 }
 
                 finish()
