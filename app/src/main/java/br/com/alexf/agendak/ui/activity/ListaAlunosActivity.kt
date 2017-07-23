@@ -6,10 +6,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import br.com.alexf.agendak.R
+import br.com.alexf.agendak.rx.RxSchedulers
 import br.com.alexf.agendak.application.AgendaKApplication
 import br.com.alexf.agendak.model.Aluno
 import br.com.alexf.agendak.ui.adapter.AlunosAdapter
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_lista_alunos.*
@@ -37,14 +37,11 @@ class ListaAlunosActivity : AppCompatActivity() {
                 var aluno = adapter.alunoSelecionado
                 var database = AgendaKApplication.database
                 var dao = database.alunoDAO()
-                Single.fromCallable {
-                    aluno?.let {
-                        dao.remove(aluno)
-                    }
+                RxSchedulers().singleMainThread {
+                    aluno?.let { dao.remove(aluno) }
                     mostraAlunos()
-                }.subscribeOn(Schedulers.io())
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .subscribe()
+                }
+
             }
         }
         return super.onContextItemSelected(item)

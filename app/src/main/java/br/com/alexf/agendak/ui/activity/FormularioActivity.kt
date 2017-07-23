@@ -6,11 +6,9 @@ import android.view.Menu
 import android.view.MenuItem
 import br.com.alexf.agendak.R
 import br.com.alexf.agendak.R.id.menu_formulario_ok
+import br.com.alexf.agendak.rx.RxSchedulers
 import br.com.alexf.agendak.application.AgendaKApplication
 import br.com.alexf.agendak.model.Aluno
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_formulario.*
 
 class FormularioActivity : AppCompatActivity() {
@@ -44,12 +42,17 @@ class FormularioActivity : AppCompatActivity() {
         when (id) {
             menu_formulario_ok -> {
                 var aluno = pegaAluno()
-                Single.fromCallable {
+//                Single.fromCallable {
+//                    var database = AgendaKApplication.database
+//                    database.alunoDAO().insert(aluno)
+//                }.subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe()
+                RxSchedulers().singleMainThread {
                     var database = AgendaKApplication.database
                     database.alunoDAO().insert(aluno)
-                }.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe()
+                }
+
                 finish()
             }
         }
